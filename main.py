@@ -38,16 +38,31 @@ tests.test_load_vgg(load_vgg, tf)
 
 
 def layers(vgg_layer3_out, vgg_layer4_out, vgg_layer7_out, num_classes):
+    
     """
-    Create the layers for a fully convolutional network.  Build skip-layers using the vgg layers.
-    :param vgg_layer7_out: TF Tensor for VGG Layer 3 output
-    :param vgg_layer4_out: TF Tensor for VGG Layer 4 output
-    :param vgg_layer3_out: TF Tensor for VGG Layer 7 output
-    :param num_classes: Number of classes to classify
-    :return: The Tensor for the last layer of output
+    Load Pretrained VGG Model into TensorFlow.
+    :param sess: TensorFlow Session
+    :param vgg_path: Path to vgg folder, containing "variables/" and "saved_model.pb"
+    :return: Tuple of Tensors from VGG model (image_input, keep_prob, layer3_out, layer4_out, layer7_out)
     """
-    # TODO: Implement function
-    return None
+
+    vgg_tag = 'vgg16'
+    tf.saved_model.loader.load(sess,[vgg_tag], vgg_path)
+    
+    vgg_input_tensor_name = 'image_input:0'
+    vgg_keep_prob_tensor_name = 'keep_prob:0'
+    vgg_layer3_out_tensor_name = 'layer3_out:0'
+    vgg_layer4_out_tensor_name = 'layer4_out:0'
+    vgg_layer7_out_tensor_name = 'layer7_out:0'
+
+    tf_graph = tf.get_default_graph()
+    vgg_input_tensor = tf_graph.get_tensor_by_name(vgg_input_tensor_name)
+    vgg_keep_prob_tensor = tf_graph.get_tensor_by_name(vgg_keep_prob_tensor_name)
+    vgg_layer3_out = tf_graph.get_tensor_by_name(vgg_layer3_out_tensor_name)
+    vgg_layer4_out = tf_graph.get_tensor_by_name(vgg_layer4_out_tensor_name)
+    vgg_layer7_out = tf_graph.get_tensor_by_name(vgg_layer7_out_tensor_name)
+
+    return vgg_input_tensor, vgg_keep_prob_tensor, vgg_layer3_out, vgg_layer4_out, vgg_layer7_out
 tests.test_layers(layers)
 
 
